@@ -1,0 +1,36 @@
+CROSS_HOST="i686-pc-cygwin"
+inherit cross
+
+NAME="cygwin32-libbfd"
+VERSION=2.23.51
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="BFD for Cygwin 32bit toolchain"
+HOMEPAGE="http://www.gnu.org/software/binutils/"
+SRC_DIR="binutils-${VERSION}"
+case ${VERSION} in
+*.*.[5-9][0-9])
+	SRC_URI="mirror://sourceware/binutils/snapshots/binutils.tar.bz2"
+	SRC_DIR="binutils-";;
+*)	SRC_URI="mirror://gnu/binutils/binutils-${VERSION}.tar.bz2" ;;
+esac
+
+cygwin32_libbfd_REQUIRES="cygwin32-libiconv cygwin32-gettext cygwin32-zlib"
+
+src_compile() {
+	cd ${B}
+	cygconf \
+		--without-included-gettext \
+		--without-libiconv-prefix \
+		--without-libintl-prefix \
+		--disable-werror
+	cygmake all-libiberty all-opcodes all-bfd
+}
+
+src_install() {
+	cd ${B}
+	cygmake DESTDIR=${D} install-libiberty install-opcodes install-bfd
+
+	# conflicts with native binutils
+	rm -fr ${D}${CROSS_DATADIR}/{info,locale}/
+}
