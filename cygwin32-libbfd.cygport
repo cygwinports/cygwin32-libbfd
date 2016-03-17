@@ -2,7 +2,7 @@ CROSS_HOST="i686-pc-cygwin"
 inherit cross
 
 NAME="cygwin32-libbfd"
-VERSION=2.23.51
+VERSION=2.25.1
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="BFD for Cygwin 32bit toolchain"
@@ -20,9 +20,8 @@ cygwin32_libbfd_REQUIRES="cygwin32-libiconv cygwin32-gettext cygwin32-zlib"
 src_compile() {
 	cd ${B}
 	cygconf \
+		--enable-install-libiberty \
 		--without-included-gettext \
-		--without-libiconv-prefix \
-		--without-libintl-prefix \
 		--disable-werror
 	cygmake all-libiberty all-opcodes all-bfd
 }
